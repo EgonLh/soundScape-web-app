@@ -34,7 +34,7 @@ export const Nav = () => {
     };
     return (
         <Disclosure as="nav"
-                    className="bg-slate-50/[0.5] text-black bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-100 sticky top-0 z-50 transition-all duration-300 delay-300">
+                    className="bg-slate-50/[0.5] text-black bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-100 sticky top-0 z-40 transition-all duration-300 delay-300">
             {/*Main Menu*/}
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
@@ -102,7 +102,7 @@ export const Nav = () => {
                             >
                                 <MenuItem>
                                     <a
-                                        href="#"
+                                        href="/user"
                                         className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none "
                                     >
                                         Your Profile

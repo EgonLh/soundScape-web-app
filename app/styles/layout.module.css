@@ -19,9 +19,6 @@
   grid-area: header;
 }
 
-.main {
-  /*grid-area: main;*/
-}
 
 .header,
 .main {
