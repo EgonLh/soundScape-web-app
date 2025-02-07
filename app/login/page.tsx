@@ -5,6 +5,7 @@ import {selectAuth,authSlice,login} from "@/lib/features/auth/authSlice";
 import {redirect, useSearchParams} from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import jwt from "jsonwebtoken";
 export default function CustomPage() {
     const [loginApi,LoginApiResult] = useLoginMutation();
     const dispatch = useAppDispatch();
@@ -22,8 +23,12 @@ export default function CustomPage() {
     const handleSubmit = (values) => {
         console.log('Form Data:', values);  // Equivalent to your showData function
         loginApi(values).then(data=>{
+            var decode: JwtPayload | string | null;
             console.log("Data :",data.data.TOKEN)
-            console.log(login(233))
+            console.log("Here is the Token :",data.data.TOKEN);
+            decode = jwt.decode(data.data.TOKEN);
+            console.log("The Decoded Data:",decode)
+
             dispatch(login(data.data))
             redirect('/albums')
         })
