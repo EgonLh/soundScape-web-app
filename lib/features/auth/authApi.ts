@@ -44,8 +44,8 @@ export const authApi = albumAPISlice.injectEndpoints({
         //     invalid tags and other laters
         }),
         getUserInfo: build.query<UserInfoResponse, void>({
-            query: (usrName) => ({
-                url: `/users/${usrName}`,  // Assuming this endpoint returns user info
+            query: (id) => ({
+                url: `/users/${id}`,  // Assuming this endpoint returns user info
                 method: 'GET'
             }),
             providesTags: ['User']  // Tag to manage caching

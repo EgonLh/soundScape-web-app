@@ -1,7 +1,5 @@
 import {createAppSlice} from "@/lib/createAppSlice";
 import {PayloadAction} from "@reduxjs/toolkit";
-import {fetchCount} from "@/lib/features/counter/counterAPI";
-import {counterSlice, CounterSliceState} from "@/lib/features/counter/counterSlice";
 import {AuthResponse} from "@/lib/features/auth/authApi";
 
 const initialState: AuthResponse = {
@@ -19,7 +17,6 @@ export const authSlice = createAppSlice({
         }),
         logout:create.reducer((state) => {
             state.TOKEN = '';
-            
         }),
 
 

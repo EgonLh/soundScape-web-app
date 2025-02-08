@@ -4,8 +4,7 @@ import BlurText from "@/app/components/TextAnimations/BlurText/BlurText";
 import React from "react";
 
 export default function UserDashboard(){
-    return(<div className={"bg-black "}>
+    return(<div className={"container w-5/6   border"}>
         <UserDashBoardContainer/>
-        Hello World
     </div>)
 }
