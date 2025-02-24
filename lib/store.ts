@@ -7,10 +7,11 @@ import {cartSlice} from "@/lib/features/carts/CartSlice";
 import {genreAPISlice} from "@/lib/features/genres/genreAPISlice";
 import {authApi} from "@/lib/features/auth/authApi";
 import {authSlice} from "@/lib/features/auth/authSlice";
+import {OrderApiSlice} from "@/lib/features/orders/orderApiSlice";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
-const rootReducer = combineSlices(counterSlice, quotesApiSlice,albumAPISlice,authSlice,cartSlice,genreAPISlice,authApi);
+const rootReducer = combineSlices(counterSlice, quotesApiSlice,albumAPISlice,authSlice,cartSlice,genreAPISlice,authApi,OrderApiSlice);
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>;
 
@@ -24,7 +25,7 @@ export const makeStore = () => {
     // Adding the api middleware enables caching, invalidation, polling,
     // and other useful features of `rtk-query`.
     middleware: (getDefaultMiddleware) => {
-      return getDefaultMiddleware().concat(quotesApiSlice.middleware).concat(albumAPISlice.middleware).concat(genreAPISlice.middleware).concat(authApi.middleware);
+      return getDefaultMiddleware().concat(quotesApiSlice.middleware).concat(albumAPISlice.middleware).concat(genreAPISlice.middleware).concat(authApi.middleware).concat(OrderApiSlice.middleware);
     },
   });
 };

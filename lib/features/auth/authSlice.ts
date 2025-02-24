@@ -1,7 +1,7 @@
 import {createAppSlice} from "@/lib/createAppSlice";
 import {PayloadAction} from "@reduxjs/toolkit";
 import {AuthResponse} from "@/lib/features/auth/authApi";
-
+import jwt from "jsonwebtoken";
 const initialState: AuthResponse = {
     TOKEN:'',
 };
@@ -26,10 +26,10 @@ export const authSlice = createAppSlice({
     // state as their first argument.
     selectors: {
         selectAuth: (state) => state.TOKEN,
-
+        selectUsrID:(state)=>(jwt.decode(state.TOKEN))?.id,
     },
 });
 export const { login,logout } = authSlice.actions;
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
-export const { selectAuth } = authSlice.selectors;
+export const { selectAuth,selectUsrID } = authSlice.selectors;

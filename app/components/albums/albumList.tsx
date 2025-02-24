@@ -56,7 +56,7 @@ export default function AlbumList() {
         console.log(setOrder)
     }
 
-    return (<div className={"container"}>
+    return (<div className={"container  w-5/6"}>
         <div className={"w-full overflow-hidden flex justify-between items-center  rounded transition-all duration-300 rounded "}>
             <SimpleForm onSubmitValue={handleFormSubmit}/>
             <div>

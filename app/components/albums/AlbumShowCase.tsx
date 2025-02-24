@@ -64,7 +64,7 @@ function AllAlbum() {
 
 
 export function AlbumData(props){
-    console.log("The data :",props.albumData)
+    console.log("The data :",props.albumData);
     const {data,isLoading,isError} = useGetAlbumByGenreQuery(props.albumData);
     const path = usePathname();
     console.log("Data",data)

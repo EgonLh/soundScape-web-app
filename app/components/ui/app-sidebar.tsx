@@ -1,5 +1,5 @@
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
-import {UserCircleIcon,Bars3Icon, ShoppingCartIcon, ClipboardDocumentListIcon,ArrowsPointingOutIcon} from '@heroicons/react/24/outline'
+import {UserCircleIcon,ShoppingBagIcon,Bars3Icon, ShoppingCartIcon, ClipboardDocumentListIcon,ArrowsPointingOutIcon} from '@heroicons/react/24/outline'
 
 import {
     Sidebar,
@@ -11,33 +11,56 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/app/components/ui/sidebar"
+import Link from "next/link";
+import {useAppSelector} from "@/lib/hooks";
+import {selectAuth,selectUsrID} from "@/lib/features/auth/authSlice"
+import {useGetUserInfoQuery} from "@/lib/features/auth/authApi";
 
+export const getUserInfo = () => {
+    const userId = useAppSelector(selectUsrID);
+    const {data} = useGetUserInfoQuery(userId);
+    return data;
+}
 
 // Menu items.
-const items = [
+let Admin = [
     {
-        title: "Home",
-        url: "#",
-        icon: ClipboardDocumentListIcon,
+        title: "Order",
+        url: "/orders",
+        icon: ShoppingBagIcon,
     },
     {
         title: "Inbox",
-        url: "#",
-        icon: Bars3Icon,
+        url: `/user/`,
+        icon: UserCircleIcon,
     },
     {
         title: "Search",
         url: "#",
-        icon: UserCircleIcon,
-    },
-    {
-        title: "Settings",
-        url: "#",
-        icon: ShoppingCartIcon,
+        icon: Bars3Icon,
     },
 ]
-
+const UserItem = [
+    {
+        title: "Order",
+        url: "/orders",
+        icon: ShoppingBagIcon,
+    },
+    {
+        title: "Inbox",
+        url: `/user/`,
+        icon: UserCircleIcon,
+    }
+]
 export function AppSidebar() {
+    let userInfo = getUserInfo();
+    let items ;
+    console.log("User Role :",userInfo?.role)
+    if(userInfo?.role !== "admin"){
+       items = UserItem;
+    }else {
+        items = Admin;
+    }
     return (
         <Sidebar>
             <SidebarContent>
@@ -47,9 +70,9 @@ export function AppSidebar() {
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild>
-                                        <a href={item.url}>
-                                            <item.icon />
-                                        </a>
+                                        <Link href={item.url} className={"flex mx-aut"}>
+                                            <item.icon />{item.title}
+                                        </Link>
                                     </SidebarMenuButton>
 
                                 </SidebarMenuItem>
@@ -58,19 +81,19 @@ export function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-                <SidebarFooter>
-                    <SidebarMenu>
+
+            </SidebarContent>
+            <SidebarFooter>
+                <SidebarMenu>
                     <SidebarMenuItem key={122323}>
                         <SidebarMenuButton asChild>
                             <a href={"/"}>
                                 <ArrowsPointingOutIcon/>
                             </a>
                         </SidebarMenuButton>
-
                     </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarFooter>
-            </SidebarContent>
+                </SidebarMenu>
+            </SidebarFooter>
         </Sidebar>
     )
 }

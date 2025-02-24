@@ -48,7 +48,6 @@ export const authApi = albumAPISlice.injectEndpoints({
                 url: `/users/${id}`,  // Assuming this endpoint returns user info
                 method: 'GET'
             }),
-            providesTags: ['User']  // Tag to manage caching
         }),
     }),
     overrideExisting:true

@@ -25,17 +25,17 @@ export interface Album {
 export const albumAPISlice = createApi({
         baseQuery: fetchBaseQuery({baseUrl: BackEND_URL}),
         reducerPath: "albumAPI",
-        prepareHeaders: (headers, {getState}) => {
-        // By default, if we have a token in the store, let's use that for authenticated requests
-        const state = (getState() as RootState);
-        console.log('prepareHeaders State  >>>>', state);
-        if(state.auth.token)
-        {
-            headers.set('Authorization', 'Bearer '+state.auth.TOKEN);
-        }
-        return headers;
-        },
-        tagTypes: ["ALBUMS","USER"],
+        // prepareHeaders: (headers, {getState}) => {
+        // // By default, if we have a token in the store, let's use that for authenticated requests
+        // const state = (getState() as RootState);
+        // console.log('prepareHeaders State  >>>>', state);
+        // if(state.auth.token)
+        // {
+        //     headers.set('Authorization', 'Bearer '+state.auth.TOKEN);
+        // }
+        // return headers;
+        // },
+        tagTypes: ["ALBUMS"],
         endpoints: (build) => ({
             getAlbums: build.query<Album[]>({
                 query: () => `/albums`,
@@ -47,6 +47,10 @@ export const albumAPISlice = createApi({
             }),
             getAlbumByFilter:build.query<Album[]>({
                 query: (filter) => `/albums/${filter}`,
+                providesTags: () => ["ALBUMS"],
+            }),
+            getAlbumByGenre:build.query<Album[]>({
+                query: (filter) => `/albums/genre/${filter}`,
                 providesTags: () => ["ALBUMS"],
             })
         })
