@@ -1,16 +1,6 @@
-import {Calendar} from "@/app/components/ui/calendar"
 import React from "react";
 import {ChevronLeft} from "lucide-react";
-export default function CalenderChart() {
-    const [date, setDate] = React.useState<Date | undefined>(new Date());
 
-    return (<Calendar
-        mode="single"
-        selected={date}
-        onSelect={setDate}
-        className="rounded-md border bg-slate-50 flex justify-center"
-    />)
-}
 
 export function CardITem(props) {
     let title = props?.title;

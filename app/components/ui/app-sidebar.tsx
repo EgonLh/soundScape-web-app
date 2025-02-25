@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import {Calendar, ChevronUp, Home, Inbox, FileUser, Settings, User2,SendHorizonal,Mail,FileText,Send,FileTextIcon} from "lucide-react"
 import {UserCircleIcon,ShoppingBagIcon,Bars3Icon, ShoppingCartIcon, ClipboardDocumentListIcon,ArrowsPointingOutIcon} from '@heroicons/react/24/outline'
 
 import {
@@ -15,6 +15,13 @@ import Link from "next/link";
 import {useAppSelector} from "@/lib/hooks";
 import {selectAuth,selectUsrID} from "@/lib/features/auth/authSlice"
 import {useGetUserInfoQuery} from "@/lib/features/auth/authApi";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "@/app/components/ui/dropdown-menu";
+import {useId} from "react";
 
 export const getUserInfo = () => {
     const userId = useAppSelector(selectUsrID);
@@ -22,22 +29,54 @@ export const getUserInfo = () => {
     return data;
 }
 
-// Menu items.
-let Admin = [
+
+const Admin = [
     {
-        title: "Order",
-        url: "/orders",
-        icon: ShoppingBagIcon,
+        group: "General",
+        links: [
+            {
+                title: "Dashboard",
+                url: "/user",
+                icon: Home,
+            },
+            {
+                title: "Orders",
+                url: "/orders",
+                icon: ShoppingBagIcon,
+            },
+            {
+                title: "Users",
+                url: "#",
+                icon: User2,
+            },
+            {
+                title: "Record",
+                url: "#",
+                icon: FileTextIcon,
+            },
+            {
+                title: "Request",
+                url: "#",
+                icon: SendHorizonal,
+            },
+
+        ],
     },
     {
-        title: "Inbox",
-        url: `/user/`,
-        icon: UserCircleIcon,
-    },
-    {
-        title: "Search",
-        url: "#",
-        icon: Bars3Icon,
+        group: "Pages",
+        links: [
+            {
+                title: "Profile",
+                url: "#",
+                icon: FileUser,
+            },
+            {
+                title: "Setting",
+                url: "#",
+                icon: Settings,
+            },
+
+        ],
     },
 ]
 const UserItem = [
@@ -53,6 +92,8 @@ const UserItem = [
     }
 ]
 export function AppSidebar() {
+    let id = useId();
+
     let userInfo = getUserInfo();
     let items ;
     console.log("User Role :",userInfo?.role)
@@ -63,34 +104,52 @@ export function AppSidebar() {
     }
     return (
         <Sidebar>
-            <SidebarContent>
+            <SidebarContent className={"bg-white"}>
                 <SidebarGroup>
                     <SidebarGroupContent>
-                        <SidebarMenu>
-                            {items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
-                                        <Link href={item.url} className={"flex mx-aut"}>
-                                            <item.icon />{item.title}
-                                        </Link>
-                                    </SidebarMenuButton>
-
-                                </SidebarMenuItem>
-                            ))}
-
+                        <SidebarMenu key={id}>
+                            {/*{items.map((group) => (*/}
+                            {/*    <div key={} className={"my-2"}>*/}
+                            {/*        <SidebarGroupLabel key={group.links}>{group.group}</SidebarGroupLabel>*/}
+                            {/*        {group.links?.map((link) => (*/}
+                            {/*            <SidebarMenuItem key={link.title} >*/}
+                            {/*                <SidebarMenuButton asChild className={"my-2 text-slate-500 hover:text-slate-900"}>*/}
+                            {/*                    <Link href={link.url}>*/}
+                            {/*                        <link.icon/>*/}
+                            {/*                        <span>{link.title}</span>*/}
+                            {/*                    </Link>*/}
+                            {/*                </SidebarMenuButton>*/}
+                            {/*            </SidebarMenuItem>*/}
+                            {/*        ))}*/}
+                            {/*    </div>*/}
+                            {/*))}*/}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
 
             </SidebarContent>
             <SidebarFooter>
-                <SidebarMenu>
-                    <SidebarMenuItem key={122323}>
-                        <SidebarMenuButton asChild>
-                            <a href={"/"}>
-                                <ArrowsPointingOutIcon/>
-                            </a>
-                        </SidebarMenuButton>
+                <SidebarMenu key={Math.random()}>
+                    <SidebarMenuItem>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <SidebarMenuButton>
+                                    <User2 /> Username
+                                    <ChevronUp className="ml-auto" />
+                                </SidebarMenuButton>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                side="top"
+                                className="w-[--radix-popper-anchor-width]"
+                            >
+                                <DropdownMenuItem>
+                                    <span>Account</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <a href={"/"}>Sign Out</a>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarFooter>
