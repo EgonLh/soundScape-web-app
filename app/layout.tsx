@@ -7,7 +7,7 @@ import "./styles/globals.css";
 import styles from "./styles/layout.module.css";
 import Footer from "@/app/components/Footer";
 import React from "react";
-import {getUserInfo} from "@/app/components/ui/app-sidebar";
+import {Toaster} from "@/components/ui/sonner";
 interface Props {
   readonly children: ReactNode;
 }
@@ -20,6 +20,7 @@ export default function RootLayout({ children }: Props) {
         <body className={"bg-slate-50"}>
           <section className={styles.container}>
             <Nav />
+            <Toaster/>
             <div className={"flex justify-center"}>
               <div className={"container"}>
                 <main className={styles.main}>{children}</main>

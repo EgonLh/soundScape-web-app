@@ -4,7 +4,7 @@ export default function DashboardNav(props: { data: any ,title:String}) {
     return <div className={" py-3  my-4 flex justify-between items-center px-3 rounded "}>
         <div
             className={"text-lg font-semibold hover:bg-gray-300/[0.5] hover:px-3 transition-all duration-200 ease-in-out rounded"}>
-            {props.data?.role == "admin" ? <span className={"font-mono"}>{props.title}</span> : <span>
+            {props.data?.role == "admin" ? <span className={"font-mono"}>{props?.title} </span> : <span>
                     Hello, {props.data?.username.toUpperCase()}
                 </span>}
         </div>

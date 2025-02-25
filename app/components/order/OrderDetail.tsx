@@ -1,8 +1,9 @@
 "use client"
 import {useGetAllOrdersQuery} from "@/lib/features/orders/orderApiSlice";
-import {Card, CardContent, CardHeader, CardTitle} from "@/app/components/ui/card";
-import {Badge} from "@/app/components/ui/badge";
+import {Dialog,DialogTrigger,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/app/components/ui/dialog"
+import {NotepadText} from "lucide-react";
 import {Any} from "@react-spring/types";
+import FormComponent from "@/app/components/form/Forms";
 export default function OrderDetail({data:any}) {
     const {data,isLoading} = useGetAllOrdersQuery();
     if(isLoading){
@@ -24,19 +25,31 @@ export const Order = ({orders}:{orders:Any})=>{
                    <img src={order?.userId?.profileUrl} className={"max-w-12 rounded-full border me-3"}/>
                    <div className={" align-middle w-fit rounded  text-zinc-600 transition-all duration-300 hover:text-black px-1 font-mono my-1 hover:bg-slate-100/[0.9] hover:border"}>{order?.userId?.contact?.email}</div>
                    </div>
-                <div className={"w-2/8  mx-1 flex justify-center transition-all duration-300 "}>
+                <div className={"  mx-1 flex justify-end transition-all duration-300 "}>
                     <div className={" align-middle w-fit rounded text-zinc-600 transition-all duration-300 hover:text-black px-1 font-mono my-1 hover:bg-slate-100/[0.9] hover:border"}>{order?.ordered_date}</div>
                 </div>
-                <div className={"w-2/8  mx-1 flex justify-center   transition-all duration-300 "}>
+                <div className={"  mx-1 flex justify-end   transition-all duration-300 "}>
                     <div className={" align-middle w-fit rounded text-lime-950 transition-all duration-300 hover:text-black px-1 font-mono my-1 hover:bg-orange-100/[0.9] bg-orange-300 hover:border"}>{order?.status}</div>
                 </div>
-                <div className={"w-2/8  mx-1 flex justify-center  transition-all duration-300 "}>
+                <div className={"  mx-1 flex justify-end  transition-all duration-300 "}>
                     <div className={" align-middle w-fit rounded text-zinc-600 transition-all duration-300 hover:text-black px-1 font-mono my-1 hover:bg-slate-100/[0.9] hover:border"}>{order?.fees?.$numberDecimal}</div>
                 </div>
-                <div className={"w-2/8 text-zinc-500 text-end"}>
-                Actions
+                <div className={" text-zinc-500 flex justify-end text-end mx-3"}>
+
+                    <Dialog>
+                        <DialogTrigger><div className={"hover:bg-black hover:text-white hover:p-1 rounded hover:border transition-all duration-300"}><NotepadText/></div> </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                <DialogDescription>
+                                   <p> <FormComponent data={order} /></p>
+                                </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
         ))}
     </div>)
 }
+
