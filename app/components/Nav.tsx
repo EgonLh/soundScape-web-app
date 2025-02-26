@@ -28,9 +28,12 @@ export const Nav = () => {
     const goLogout = () => {
         console.log("work")
         console.log("Item:,",cartItem.length)
-        router.push('/');
         dispatch(logout());
         dispatch(clearCart());
+        redirect('/')
+        router.push('/');
+
+        redirect('/')
     };
     return (
         <Disclosure as="nav"

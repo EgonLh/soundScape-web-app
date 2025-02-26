@@ -1,5 +1,5 @@
-import {Calendar, ChevronUp, Home, Inbox, FileUser, Settings, User2,SendHorizonal,Mail,FileText,Send,FileTextIcon} from "lucide-react"
-import {UserCircleIcon,ShoppingBagIcon,Bars3Icon, ShoppingCartIcon, ClipboardDocumentListIcon,ArrowsPointingOutIcon} from '@heroicons/react/24/outline'
+import {Calendar, ChevronUp, Home, Inbox,ListIcon, FileUser, Settings, User2,SendHorizonal,Mail,FileText,Send,FileTextIcon} from "lucide-react"
+import {UserCircleIcon,ShoppingBagIcon} from '@heroicons/react/24/outline'
 
 import {
     Sidebar,
@@ -21,7 +21,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/app/components/ui/dropdown-menu";
-import {useId} from "react";
+import React, {useId} from "react";
 
 export const getUserInfo = () => {
     const userId = useAppSelector(selectUsrID);
@@ -33,6 +33,7 @@ export const getUserInfo = () => {
 const Admin = [
     {
         group: "General",
+        id:1233,
         links: [
             {
                 title: "Dashboard",
@@ -41,29 +42,35 @@ const Admin = [
             },
             {
                 title: "Orders",
-                url: "/orders",
+                url: "/user/orders",
                 icon: ShoppingBagIcon,
             },
             {
                 title: "Users",
-                url: "#",
+                url: "/user/users",
                 icon: User2,
             },
             {
-                title: "Record",
-                url: "#",
+                title: "Albums",
+                url: "/user/albums",
                 icon: FileTextIcon,
             },
             {
-                title: "Request",
-                url: "#",
-                icon: SendHorizonal,
+                title: "Genre",
+                url: "/user/genres",
+                icon: ListIcon,
+            },
+            {
+                title: "Mail",
+                url: "/user/users/request",
+                icon: Mail,
             },
 
         ],
     },
     {
         group: "Pages",
+        id:"095833",
         links: [
             {
                 title: "Profile",
@@ -98,7 +105,7 @@ export function AppSidebar() {
     let items ;
     console.log("User Role :",userInfo?.role)
     if(userInfo?.role !== "admin"){
-       items = UserItem;
+       return null;
     }else {
         items = Admin;
     }
@@ -107,29 +114,29 @@ export function AppSidebar() {
             <SidebarContent className={"bg-white"}>
                 <SidebarGroup>
                     <SidebarGroupContent>
-                        <SidebarMenu key={id}>
-                            {/*{items.map((group) => (*/}
-                            {/*    <div key={} className={"my-2"}>*/}
-                            {/*        <SidebarGroupLabel key={group.links}>{group.group}</SidebarGroupLabel>*/}
-                            {/*        {group.links?.map((link) => (*/}
-                            {/*            <SidebarMenuItem key={link.title} >*/}
-                            {/*                <SidebarMenuButton asChild className={"my-2 text-slate-500 hover:text-slate-900"}>*/}
-                            {/*                    <Link href={link.url}>*/}
-                            {/*                        <link.icon/>*/}
-                            {/*                        <span>{link.title}</span>*/}
-                            {/*                    </Link>*/}
-                            {/*                </SidebarMenuButton>*/}
-                            {/*            </SidebarMenuItem>*/}
-                            {/*        ))}*/}
-                            {/*    </div>*/}
-                            {/*))}*/}
+                        <SidebarMenu>
+                            {items.map((group) => (
+                                <div key={group.group} className={"my-2"}>
+                                    <SidebarGroupLabel key={group.id}>{group.group}</SidebarGroupLabel>
+                                    {group.links?.map((link) => (
+                                        <SidebarMenuItem key={link.title} >
+                                            <SidebarMenuButton asChild className={"my-2 text-slate-500 hover:text-slate-900"}>
+                                                <Link href={link.url}>
+                                                    <link.icon/>
+                                                    <span>{link.title}</span>
+                                                </Link>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    ))}
+                                </div>
+                            ))}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
 
             </SidebarContent>
             <SidebarFooter>
-                <SidebarMenu key={Math.random()}>
+                <SidebarMenu>
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>

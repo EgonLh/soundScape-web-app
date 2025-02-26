@@ -3,7 +3,7 @@ import {useGetAllOrdersQuery} from "@/lib/features/orders/orderApiSlice";
 import {Dialog,DialogTrigger,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/app/components/ui/dialog"
 import {NotepadText} from "lucide-react";
 import {Any} from "@react-spring/types";
-import FormComponent from "@/app/components/form/Forms";
+import {FormComponent} from "@/app/components/form/Forms";
 export default function OrderDetail({data:any}) {
     const {data,isLoading} = useGetAllOrdersQuery();
     if(isLoading){
@@ -40,9 +40,11 @@ export const Order = ({orders}:{orders:Any})=>{
                         <DialogTrigger><div className={"hover:bg-black hover:text-white hover:p-1 rounded hover:border transition-all duration-300"}><NotepadText/></div> </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                <DialogDescription>
-                                   <p> <FormComponent data={order} /></p>
+                                <DialogTitle >Are you absolutely sure?</DialogTitle>
+                                <DialogDescription asChild>
+                                   <div>
+                                       <FormComponent data={order} />
+                                   </div>
                                 </DialogDescription>
                             </DialogHeader>
                         </DialogContent>

@@ -8,6 +8,7 @@ import {selectAuth,authSlice,login} from "@/lib/features/auth/authSlice";
 import {redirect, useSearchParams} from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import {toast} from "sonner";
 export default function CustomPage() {
     const [loginApi,LoginApiResult] = useLoginMutation();
     const dispatch = useAppDispatch();
@@ -32,6 +33,7 @@ export default function CustomPage() {
             // console.log("The Decoded Data:",decode)
 
             dispatch(login(data.data))
+            toast(`You are loggin in as ${data.username}`)
             redirect('/albums')
         })
     };

@@ -1,9 +1,10 @@
 "use client"
 import {useGetAllUsersQuery} from "@/lib/features/users/userApiSlice";
 import {Dialog,DialogTrigger,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/app/components/ui/dialog"
-import {NotepadText} from "lucide-react";
+import {NotepadText, Send} from "lucide-react";
 import {Any} from "@react-spring/types";
-import FormComponent from "@/app/components/form/Forms";
+import {UserFormComponent} from "@/app/components/form/Forms";
+import {useRouter} from "next/navigation";
 export default function UserDetail({data:any}) {
     console.log(useGetAllUsersQuery)
     const {data,isLoading} = useGetAllUsersQuery();
@@ -17,7 +18,11 @@ export default function UserDetail({data:any}) {
 }
 
 export const User = ({users}:{users:Any})=>{
-    console.log(users)
+    const router = useRouter()
+    console.log(users);
+    const gotoDetail = (id) => {
+        router.push(`/user/users/${id}`)
+    }
     return ( <div className="p-4  w-full rounded-md border">
         <h2 className="text-2xl font-bold mb-4">User List</h2>
         {users?.map((user) => (
@@ -43,13 +48,15 @@ export const User = ({users}:{users:Any})=>{
                         <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                <DialogDescription>
-                                    {/*<p> <FormComponent data={order} /></p>*/}
-                                    <p>Just Kidding</p>
+                                <DialogDescription asChild>
+                                   <div>
+                                       <UserFormComponent data={user}/>
+                                   </div>
                                 </DialogDescription>
                             </DialogHeader>
                         </DialogContent>
                     </Dialog>
+                    <button onClick={()=>(gotoDetail(user?._id))}><Send/></button>
                 </div>
             </div>
         ))}

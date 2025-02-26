@@ -1,12 +1,14 @@
+"use client"
 import {SidebarTrigger} from "@/app/components/ui/sidebar";
 
-export default function DashboardNav(props: { data: any ,title:String}) {
+export default function DashboardNav(props: { data: any ,title:String,icon:any}) {
+    console.log("Dashboard Nav :",props?.data)
     return <div className={" py-3  my-4 flex justify-between items-center px-3 rounded "}>
         <div
-            className={"text-lg font-semibold hover:bg-gray-300/[0.5] hover:px-3 transition-all duration-200 ease-in-out rounded"}>
-            {props.data?.role == "admin" ? <span className={"font-mono"}>{props?.title} </span> : <span>
-                    Hello, {props.data?.username.toUpperCase()}
-                </span>}
+            className={"text-lg font-semibold hover:bg-zinc-300/[0.5] hover:p-1 hover:px-3 hover:border transition-all duration-200 ease-in-out rounded"}>
+            {props.data ? <span>Hello, {props.data?.username.toUpperCase()} </span> :
+                <div className={"font-mono flex"}><span className={"me-3"}>{props.icon}</span>{props?.title}
+                </div>}
         </div>
         <div className={"flex items-center "}>
             <div

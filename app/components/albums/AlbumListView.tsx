@@ -3,7 +3,7 @@ import {useGetAlbumsQuery} from "@/lib/features/albums/albumAPISlice";
 import {Dialog,DialogTrigger,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/app/components/ui/dialog"
 import {NotepadText} from "lucide-react";
 import {Any} from "@react-spring/types";
-import FormComponent from "@/app/components/form/Forms";
+import FormComponent, {ProductFormComponent} from "@/app/components/form/Forms";
 export default function AlbumListView({data:any}) {
     const {data,isLoading} = useGetAlbumsQuery();
     if(isLoading){
@@ -41,8 +41,10 @@ export const Album = ({albums}:{albums:Any})=>{
                         <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                <DialogDescription>
-                                    <p> Testing</p>
+                                <DialogDescription asChild>
+                                   <div>
+                                       <ProductFormComponent data={album}/>
+                                   </div>
                                 </DialogDescription>
                             </DialogHeader>
                         </DialogContent>
