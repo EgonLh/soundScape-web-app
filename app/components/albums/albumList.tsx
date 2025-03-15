@@ -75,7 +75,7 @@ export default function AlbumList() {
             </div>
         </div>
 
-        {data.length!==0?<div className={"grid lg:grid-cols-4 grid-cols-2 gap-10 my-4 min-h-96"}>{data.map(album => <AlbumCard
+        {data.length!==0?<div className={"grid lg:grid-cols-3 xl:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-10 my-4 min-h-96"}>{data.map(album => <AlbumCard
             key={album._id} a={album} pathCheck={path}/>)}</div>:<EmptyCase/>}
     </div>)
 }
@@ -95,7 +95,7 @@ const SimpleForm = ({onSubmitValue}) => {
     };
 
     return (
-        <div className="min-w-96">
+        <div className="min-w-96 my-3">
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}

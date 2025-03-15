@@ -471,3 +471,115 @@ export const RequestFormComponent = ({user_id}:{any}) => {
             )}
             </Formik>)
             };
+
+
+export const GenreFormComponent = ({ data }) => {
+    const [mode, setEdit] = useState(true);
+
+    const handleEdit = () => {
+        setEdit(!mode);
+        let msg = mode ? "Enabled" : "Disabled";
+        toast(`Edit mode has been successfully ${msg}`);
+    };
+
+    console.log("Genre form data:", data);
+
+    return (
+        <Formik
+            initialValues={{
+                description: data?.description,
+                genre: data?.genre,
+                createdAt: data?.metadata?.createdAt,
+                updatedAt: data?.metadata?.updatedAt,
+            }}
+            validationSchema={Yup.object({
+                description: Yup.string().required("Description is required"),
+                genre: Yup.string().required("Genre is required"),
+            })}
+            onSubmit={(values, { setSubmitting }) => {
+                console.log("Form Submitted", values);
+                setSubmitting(false);
+            }}
+        >
+            {({ isSubmitting }) => (
+                <Form className="p-4">
+                    {/* Description */}
+                    <div className={"my-3"}>
+                        <label className="block font-medium">Description:</label>
+                        <Field
+                            as="textarea"
+                            name="description"
+                            className="border p-2 w-full rounded"
+                            disabled={mode}
+                            rows={4}  // Adjust the height of the textarea
+                        />
+                        <ErrorMessage name="description" component="div" className="text-red-500" />
+                    </div>
+
+                    {/* Genre */}
+                    <div className={"my-3"}>
+                        <label className="block font-medium">Genre:</label>
+                        <Field
+                            type="text"
+                            name="genre"
+                            className="border p-2 w-full rounded"
+                            disabled={mode}
+                        />
+                        <ErrorMessage name="genre" component="div" className="text-red-500" />
+                    </div>
+
+                    {/* Created At */}
+                    <div className={"my-3"}>
+                        <label className="block font-medium">Created At:</label>
+                        <Field
+                            type="text"
+                            name="createdAt"
+                            className="border p-2 w-full rounded"
+                            disabled={true}
+                        />
+                        <ErrorMessage name="createdAt" component="div" className="text-red-500" />
+                    </div>
+
+                    {/* Updated At */}
+                    <div className={"my-3"}>
+                        <label className="block font-medium">Updated At:</label>
+                        <Field
+                            type="text"
+                            name="updatedAt"
+                            className="border p-2 w-full rounded"
+                            disabled={true}
+                        />
+                        <ErrorMessage name="updatedAt" component="div" className="text-red-500" />
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className={"my-5 flex justify-between items-center "}>
+                        <button
+                            type="submit"
+                            className="bg-black text-white p-1 rounded flex justify-center items-center"
+                            disabled={isSubmitting}
+                        >
+                            <SendHorizontalIcon />
+                        </button>
+
+                        <div className={"flex justify-center items-center"}>
+                            <button
+                                type={"button"}
+                                className="bg-black text-white hover:text-white/[0.8] text-white p-1 rounded"
+                                onClick={handleEdit}
+                            >
+                                {mode ? <Edit2 /> : <FolderArchive />}
+                            </button>
+                            <button
+                                className="ms-3 bg-black text-white hover:text-white/[0.8] text-white p-1 rounded"
+                                onClick={handleEdit}
+                            >
+                                <Trash />
+                            </button>
+                        </div>
+                    </div>
+                </Form>
+            )}
+        </Formik>
+    );
+};

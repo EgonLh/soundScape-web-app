@@ -4,7 +4,7 @@ import {UserCheck2Icon} from "lucide-react";
 
 
 export default function UserContainer(){
-    return <div className={"flex w-full my-4  flex-col border "}>
+    return <div className={"flex w-full my-12  flex-col bg-white rounded border  "}>
         <div>
             <DashboardNav title={"User Dashboard"} icon={<UserCheck2Icon/>}/>
         </div>

@@ -5,7 +5,7 @@ import {Activity, FileText, Group, Mail, Phone, ShoppingBag, ShoppingCart ,Recei
 import {useGetAllOrdersQuery} from "@/lib/features/orders/orderApiSlice"
 import {useRouter} from "next/navigation";
 function UserInfo(props: { data: any }) {
-    return <div className={" flex flex-col justify-between h-full"}>
+    return <div className={" flex flex-col justify-between h-full  w-full"}>
         <div className={"flex flex-col items-center justify-around border rounded shadow-sm  my-1 bg-white"}>
             <div className={"  text-center flex justify-between mx-3 w-full items-center p-3 border-b-2"}>
                 <div className={"flex justify-start items-center"}>
@@ -51,7 +51,7 @@ function UserInfo(props: { data: any }) {
 
         </div>
         <Component/>
-        <div className={"bg-white"}>
+        <div className={"bg-white mt-3"}>
             <div className={"flex justify-between  p-4  items-center border rounded hover:shadow-md transitions-all duration-300"}>
                 <div className={"flex"}>
                     <img src={props.data?.profileUrl} className={"rounded-md max-w-12 min-h-11"}/>
@@ -115,18 +115,28 @@ const router = useRouter();
 }
 
 export function AdminDashboard(props: { data: any }) {
-    return <div className={"  grid lg:grid-cols-3  grid-cols-1 gap-5 my-4 h-4/5 "}>
-        <div className={" col-span-2 flex flex-col justify-between "}>
-            <div className={' flex justify-between '}>
-                <CardITem title={"Overviews For Activities"} icon={<Activity/>}/>
-                <CardITem title={"Available Items"} icon={<ShoppingCart/>}/>
-                <CardITem title={"Ordered Items"} icon={<ShoppingBag/>}/>
-                <CardITem title={"Total Users"} icon={<Group/>}/>
+    return <div className={"  grid lg:grid-cols-3  grid-cols-1  my-4 h-4/5 w-full  w-full gap-0 lg:gap-5"}>
+        <div className={" col-span-2 flex flex-col justify-between  "}>
+            <div className="grid grid-cols-3 md:grid-cols-4 flex justify-center">
+                <div className="w-full">
+                    <CardITem title="Activities" icon={<Activity />} />
+                </div>
+                <div className="w-full flex justify-center  md:justify-start">
+                    <CardITem title="Available Items" icon={<ShoppingCart />} />
+                </div>
+                <div className="w-full flex justify-end  md:justify-start">
+                    <CardITem title="Ordered Items" icon={<ShoppingBag />} />
+                </div>
+                <div className="w-full   md:block hidden">
+                    <CardITem title="Total Users" icon={<Group />} />
+                </div>
             </div>
             <div className={"p-1 bg-white rounded flex flex-col h-5/6 mt-2 border justify-center"}>
                 <CurrentOrders/>
             </div>
         </div>
-        <UserInfo data={props.data}/>
+        <div className={"w-full "}>
+            <UserInfo data={props.data}/>
+        </div>
     </div>;
 }

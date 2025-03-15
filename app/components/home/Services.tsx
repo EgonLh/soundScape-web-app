@@ -6,9 +6,9 @@ import {useRouter} from "next/navigation";
 export default function Services() {
 
     return (
-        <div className={"w-100 md:flex justify-between   md:flex-row flex-col  my-64 rounded  shadow-slate-900/[0.2] overflow-hidden "} id={"services"}>
-            <div className={"md:w-3/5 flex flex-col justify-center items-start order-first "}>
-                <div className={"  w-4/5 "}>
+        <div className={"w-100 md:flex hover:border-none hover:py-5 transition-all duration-300  justify-between md:flex-row flex-col  my-12 rounded  shadow-slate-900/[0.2] overflow-hidden "} id={"services"}>
+            <div className={"md:w-full flex flex-col justify-center items-center border hover:border-none  order-first   "}>
+                <div className={"  md:mx-auto  w-4/5"}>
                     <div className={"my-5"}>
                         <span
                             className="inline-flex me-2  hover:bg-black transition-all duration-300 ease-in-out hover:text-white items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset">Discover</span>
@@ -32,8 +32,8 @@ export default function Services() {
                 </div>
 
             </div>
-            <div className={"w-2/5  h-[400px] "}>
-                <img src={"https://i.pinimg.com/originals/78/cb/b6/78cbb63ddda425fce2ae7f0fed9ed996.gif"} className={"w-full h-full rounded shadow"}/>
+            <div className={" w-full  md:h-[340px] h-[300px] bg-black"}>
+                <img src={"https://i.pinimg.com/736x/6e/a8/d5/6ea8d5123018ebc838d7e6a7566e0067.jpg"} className={"w-full max-w-4/5 h-full rounded-lg shadow"}/>
             </div>
 
         </div>
@@ -46,7 +46,7 @@ export function AlbumListByGenre() {
     const GoAlbums = () => {
         router.push(`/albums`)
     }
-    return (<div className={"my-64"}>
+    return (<div className={"my-40"}>
         <div className={"  w-full "}>
             <div className={"text-3xl font-bold font-mono my-3"}>Explore Here.</div>
             <div className={"text-xs font-semibold text-slate-500 hover:text-slate-900 transition-all duration-300"}>Click The Provided Label and Explore Your Favourite Album</div>

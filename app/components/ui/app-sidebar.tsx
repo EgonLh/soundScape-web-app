@@ -88,16 +88,51 @@ const Admin = [
 ]
 const UserItem = [
     {
-        title: "Order",
-        url: "/orders",
-        icon: ShoppingBagIcon,
+        group: "General",
+        id:1233,
+        links: [
+            {
+                title: "Dashboard",
+                url: "/user",
+                icon: Home,
+            },
+            {
+                title: "Orders",
+                url: "/user/orders",
+                icon: ShoppingBagIcon,
+            },
+            {
+                title: "History",
+                url: "/user/users",
+                icon: User2,
+            },
+            {
+                title: "Mail",
+                url: "/user/users/request",
+                icon: Mail,
+            },
+
+        ],
     },
     {
-        title: "Inbox",
-        url: `/user/`,
-        icon: UserCircleIcon,
-    }
+        group: "Pages",
+        id:"095833",
+        links: [
+            {
+                title: "Profile",
+                url: "#",
+                icon: FileUser,
+            },
+            {
+                title: "Setting",
+                url: "#",
+                icon: Settings,
+            },
+
+        ],
+    },
 ]
+
 export function AppSidebar() {
     let id = useId();
 
@@ -105,7 +140,7 @@ export function AppSidebar() {
     let items ;
     console.log("User Role :",userInfo?.role)
     if(userInfo?.role !== "admin"){
-       return null;
+        items = UserItem;
     }else {
         items = Admin;
     }

@@ -57,7 +57,7 @@ function AllAlbum() {
     }
     const limit = 8;
     const limitedData = data.slice(0, limit);
-    return (<div className={"grid lg:grid-cols-4 grid-cols-2 gap-10 my-4 "}>
+    return (<div className={"grid lg:grid-cols-3 xl:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-10 my-4 "}>
         {limitedData.map(a => <AlbumCard key={a._id} a={a}/>)}
     </div>)
 }
