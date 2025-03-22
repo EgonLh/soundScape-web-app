@@ -6,8 +6,7 @@ import {Any} from "@react-spring/types";
 import {UserFormComponent} from "@/app/components/form/Forms";
 import {useRouter} from "next/navigation";
 export default function UserDetail({data:any}) {
-    console.log(useGetAllUsersQuery)
-    const {data,isLoading} = useGetAllUsersQuery();
+    const {data,isLoading} = useGetAllUsersQuery(undefined,{refetchOnFocus: true});
     if(isLoading){
         return (<div>Loading</div>)
     }
@@ -27,7 +26,7 @@ export const User = ({users}:{users:Any})=>{
         <div className="font-mono w-full py-2 px-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 text-xs font-semibold text-gray-400 uppercase rounded-t">
             <div className="mx-1 text-left hover:text-black transition-all duration-300">User</div>
             <div className="mx-1 text-end hover:text-black transition-all duration-300">Username</div>
-            <div className="mx-1 text-end hidden md:block hover:text-black transition-all duration-300">Phone</div>
+            <div className="mx-1 text-end hidden md:block hover:text-black transition-all duration-300">Role</div>
             <div className="mx-1 text-end hidden lg:block hover:text-black transition-all duration-300">Billing Info</div>
             <div className="mx-1 text-end hover:text-black transition-all duration-300">Actions</div>
         </div>
@@ -58,7 +57,7 @@ const UserRecord = ({ user, gotoDetail }) => {
             {/* Phone Number (Hidden in sm, visible in md and up) */}
             <div className="mx-1 flex justify-end transition-all duration-300 hidden md:flex">
                 <div className="align-middle w-fit rounded text-lime-950 transition-all duration-300 hover:text-black px-1 font-mono my-1 hover:bg-orange-100/[0.9] bg-orange-300 hover:border">
-                    {user?.contact?.phoneNo}
+                    {user?.role}
                 </div>
             </div>
 

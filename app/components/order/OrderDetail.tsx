@@ -5,7 +5,7 @@ import {NotepadText} from "lucide-react";
 import {Any} from "@react-spring/types";
 import {FormComponent} from "@/app/components/form/Forms";
 export default function OrderDetail({data:any}) {
-    const {data,isLoading} = useGetAllOrdersQuery();
+    const {data,isLoading} = useGetAllOrdersQuery(undefined,{refetchOnFocus:true});
     if(isLoading){
         return (<div>Loading</div>)
     }

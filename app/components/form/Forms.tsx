@@ -5,28 +5,25 @@ import * as Yup from "yup";
 import {toast} from "sonner";
 import {Edit2, FolderArchive, SendHorizontalIcon, Trash} from "lucide-react"
 import {useGetUserInfoQuery} from "@/lib/features/auth/authApi";
-import {useGetAllUsersQuery} from "@/lib/features/users/userApiSlice";
+import {useGetAllUsersQuery,useUpdateUserMutation,useDeleteUserMutation} from "@/lib/features/users/userApiSlice";
 import {SendThisShit} from "@/app/components/mailder/srAction";
-import {useUpdateOrderMutation, useDeleteOrderMutation } from "@/lib/features/orders/orderApiSlice";
+import {useUpdateOrderMutation, useDeleteOrderMutation,useDeleteOrderByUserIDMutation } from "@/lib/features/orders/orderApiSlice";
 //Order Form
 export const FormComponent = ({data}: { data: Any }) => {
 
     const [updateOrder,result] = useUpdateOrderMutation();
-    const [deleteOrder] = useDeleteOrderMutation();
+    const [deleteOrder,test] = useDeleteOrderMutation();
 
-
-    const handleUpdateOrder = async () => {
-        console.log("handle Update",updateOrder)
-    };
 
     // Delete order
     const handleDeleteOrder = async () => {
-        console.log("handle Delete",deleteOrder);
-
+        event.preventDefault()
+        console.log("handle Delete Invoked",data._id);
+        deleteOrder(data._id);
     };
-    console.log("data for form ", data.metadata);
+    // console.log("data for form ", data.metadata);
     const [mode, setEdit] = useState(true);
-    console.log(mode);
+    // console.log(mode);
 
     const handleEdit = () => {
         setEdit(!mode);
@@ -53,6 +50,8 @@ export const FormComponent = ({data}: { data: Any }) => {
             const result = await updateOrder({ orderId: data._id,orderInfo:updateStatus});
 
             console.log("The result:", result);
+            toast.success("Order updated successfully");
+
         } catch (error) {
             console.error("Update failed:", error);
         } finally {
@@ -150,7 +149,7 @@ export const FormComponent = ({data}: { data: Any }) => {
                                 {mode ? <Edit2/> : <FolderArchive/>}
                             </button>
                             <button
-
+                                type="button"
                                 className=" ms-3 bg-black text-white hover:text-white/[0.8] text-white p-1 rounded "
                                 onClick={handleDeleteOrder}
                             >
@@ -166,14 +165,60 @@ export const FormComponent = ({data}: { data: Any }) => {
 
 //User Form
 export const UserFormComponent = ({data}: { data: Any }) => {
+    const [updateUser] = useUpdateUserMutation();
+    const [deleteUser] = useDeleteUserMutation();
+    const [deleteOrderByUser] = useDeleteOrderByUserIDMutation();
     const [mode, setEdit] = useState(true);
     const handleEdit = () => {
         setEdit(!mode);
         let msg = mode ? "Enabled" : "Disabled";
         toast(`Edit mode has been successfully ${msg}`);
     };
+    const handleDeleteOrder = async () => {
+        event.preventDefault()
+        console.log("handle Delete Invoked",data._id);
+        deleteUser(data._id);
+        deleteOrderByUser(data._id);
+        console.log("success")
+    };
+    const handleSubmit = async (values, { setSubmitting }) => {
+        try {
+            console.log("Form Submitted, Order ID:", data._id);
+            console.log("The Values:", values.role);
+            const updateUserInfo = {
+                username: values.username,
+                name: {
+                    firstName: values.fname,
+                    lastName: values.lname,
+                },
+                contact: {
+                    email: values.email,
+                    phoneNo: values.phone,
+                },
+                role: values.role,
+                profileUrl: values.profile,
+                billInfo: values.billing,
+                metadata: {
+                    updatedAt: new Date().toLocaleDateString("en-US") // Store timestamp in ISO format
+                }
+            };
+            if (!data._id) {
+                console.error("Error: Order ID is missing!");
+                setSubmitting(false);
+                return;
+            }
+            console.log("The updated Value",updateUserInfo)
+            const result = await updateUser({ userId: data._id,userInfo:updateUserInfo});
 
+            console.log("The result:", result);
+            toast.success("Users updated successfully");
 
+        } catch (error) {
+            console.error("Update failed:", error);
+        } finally {
+            setSubmitting(false);
+        }
+    };
     return (
         <Formik
             initialValues={{
@@ -194,23 +239,20 @@ export const UserFormComponent = ({data}: { data: Any }) => {
                 email: Yup.string().email("Invalid email").required("Email is required"),
 
             })}
-            onSubmit={(values, {setSubmitting}) => {
-                console.log("Form Submitted", values);
-                setSubmitting(false);
-            }}
+            onSubmit={handleSubmit}
         >
             {({isSubmitting}) => (
                 <Form className="p-4  ">
                     <div className={"my-3"}>
                         <label className="block font-medium">Profile Url:</label>
-                        <Field type="text" name="profile" className="border p-2 w-full rounded" disabled={true}/>
+                        <Field type="text" name="profile" className="border p-2 w-full rounded" disabled={mode}/>
                         <ErrorMessage name="profile" component="div" className="text-red-500"/>
                     </div>
                     <div className={"my-3"}>
                         <label className="block font-medium">Name:</label>
                         <div className={"flex justify-between"}>
-                            <Field type="text" name="fname" className={`border p-2 w-full rounded `} disabled={true}/>
-                            <Field type="text" name="lname" className={`border p-2 w-full rounded `} disabled={true}/>
+                            <Field type="text" name="fname" className={`border p-2 w-full rounded `} disabled={mode}/>
+                            <Field type="text" name="lname" className={`border p-2 w-full rounded `} disabled={mode}/>
                         </div>
 
                         <ErrorMessage name="fname" component="div" className="text-red-500"/>
@@ -218,17 +260,17 @@ export const UserFormComponent = ({data}: { data: Any }) => {
                     </div>
                     <div className={"my-3"}>
                         <label className="block font-medium">Username:</label>
-                        <Field type="text" name="username" className="border p-2 w-full rounded" disabled={true}/>
+                        <Field type="text" name="username" className="border p-2 w-full rounded" disabled={mode}/>
                         <ErrorMessage name="username" component="div" className="text-red-500"/>
                     </div>
                     <div className={"my-3"}>
                         <label className="block font-medium">Email:</label>
-                        <Field type="email" name="email" className="border p-2 w-full rounded" disabled={true}/>
+                        <Field type="email" name="email" className="border p-2 w-full rounded" disabled={mode}/>
                         <ErrorMessage name="email" component="div" className="text-red-500"/>
                     </div>
                     <div className={"my-3"}>
                         <label className="block font-medium">Phone:</label>
-                        <Field type="phone" name="phone" className="border p-2 w-full rounded" disabled={true}/>
+                        <Field type="phone" name="phone" className="border p-2 w-full rounded" disabled={mode}/>
                         <ErrorMessage name="phone" component="div" className="text-red-500"/>
                     </div>
 
@@ -275,9 +317,9 @@ export const UserFormComponent = ({data}: { data: Any }) => {
                                 {mode ? <Edit2/> : <FolderArchive/>}
                             </button>
                             <button
-
+                                type={"button"}
+                                onClick={handleDeleteOrder}
                                 className=" ms-3 bg-black text-white hover:text-white/[0.8] text-white p-1 rounded "
-                                onClick={handleEdit}
                             >
                                 <Trash/>
                             </button>

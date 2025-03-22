@@ -49,15 +49,23 @@ export const OrderApiSlice = createApi({
             }),
             invalidatesTags: ["ORDERS"],
         }),
-        deleteOrder: build.mutation<{ success: boolean }, string>({
+        deleteOrder: build.mutation<{ id: string }>({
             query: (id) => ({
                 url: `/orders/${id}`,
                 method: "DELETE",
             }),
             invalidatesTags: ["ORDERS"],
         }),
+        deleteOrderByUserID: build.mutation<{id:string}>({
+            query: (id) => ({
+                url: `/orders/user/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["ORDERS"],
+        })
+
     })
 })
 
 
-export const {useGetAllOrdersQuery,useGetOrdersByUsrIdQuery,useUpdateOrderMutation,useDeleteOrderMutation} = OrderApiSlice;
+export const {  useGetAllOrdersQuery,useGetOrdersByUsrIdQuery,useUpdateOrderMutation,useDeleteOrderMutation,useDeleteOrderByUserIDMutation} = OrderApiSlice;
