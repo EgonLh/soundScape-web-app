@@ -7,9 +7,23 @@ import {Edit2, FolderArchive, SendHorizontalIcon, Trash} from "lucide-react"
 import {useGetUserInfoQuery} from "@/lib/features/auth/authApi";
 import {useGetAllUsersQuery} from "@/lib/features/users/userApiSlice";
 import {SendThisShit} from "@/app/components/mailder/srAction";
-
+import {useUpdateOrderMutation, useDeleteOrderMutation } from "@/lib/features/orders/orderApiSlice";
 //Order Form
 export const FormComponent = ({data}: { data: Any }) => {
+
+    const [updateOrder,result] = useUpdateOrderMutation();
+    const [deleteOrder] = useDeleteOrderMutation();
+
+
+    const handleUpdateOrder = async () => {
+        console.log("handle Update",updateOrder)
+    };
+
+    // Delete order
+    const handleDeleteOrder = async () => {
+        console.log("handle Delete",deleteOrder);
+
+    };
     console.log("data for form ", data.metadata);
     const [mode, setEdit] = useState(true);
     console.log(mode);
@@ -20,7 +34,31 @@ export const FormComponent = ({data}: { data: Any }) => {
         toast(`Edit mode has been successfully ${msg}`);
 
     };
+    const handleSubmit = async (values, { setSubmitting }) => {
+        try {
+            console.log("Form Submitted, Order ID:", data._id);
+            console.log("The Values:", values.current_status);
+            const updateStatus = {
+                status: values.current_status,
+                metadata: {
+                    updatedAt: new Date().toLocaleDateString("en-US")// Store timestamp in ISO format
+                }
+            };
+            if (!data._id) {
+                console.error("Error: Order ID is missing!");
+                setSubmitting(false);
+                return;
+            }
 
+            const result = await updateOrder({ orderId: data._id,orderInfo:updateStatus});
+
+            console.log("The result:", result);
+        } catch (error) {
+            console.error("Update failed:", error);
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     return (
         <Formik
@@ -38,10 +76,7 @@ export const FormComponent = ({data}: { data: Any }) => {
                 email: Yup.string().email("Invalid email").required("Email is required"),
 
             })}
-            onSubmit={(values, {setSubmitting}) => {
-                console.log("Form Submitted", values);
-                setSubmitting(false);
-            }}
+            onSubmit={handleSubmit}
         >
             {({isSubmitting}) => (
                 <Form className="p-4  ">
@@ -117,7 +152,7 @@ export const FormComponent = ({data}: { data: Any }) => {
                             <button
 
                                 className=" ms-3 bg-black text-white hover:text-white/[0.8] text-white p-1 rounded "
-                                onClick={handleEdit}
+                                onClick={handleDeleteOrder}
                             >
                                 <Trash/>
                             </button>

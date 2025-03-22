@@ -9,7 +9,7 @@ export default function OrderDetail({data:any}) {
     if(isLoading){
         return (<div>Loading</div>)
     }
-    console.log("Order :Data ",data)
+    console.log("Order :Data ",data.length)
     return (<div className={"w-full"}>
         <Order orders={data}/>
     </div>)
