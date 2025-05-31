@@ -64,7 +64,7 @@ export const OrderApiSlice = createApi({
             invalidatesTags: ["ORDERS"],
         })
 
-    })
+    }),
 })
 
 

@@ -1,22 +1,81 @@
 "use client"
-import {useGetAllOrdersQuery} from "@/lib/features/orders/orderApiSlice";
+import {useGetAllOrdersQuery,useGetOrdersByUsrIdQuery} from "@/lib/features/orders/orderApiSlice";
 import {Dialog,DialogTrigger,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/app/components/ui/dialog"
-import {NotepadText} from "lucide-react";
+import {useGetUserByRoleQuery,} from "@/lib/features/users/userApiSlice";
+import {NotepadText, Search, Trash, User} from "lucide-react";
 import {Any} from "@react-spring/types";
 import {FormComponent} from "@/app/components/form/Forms";
+import {useState} from "react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/app/components/ui/select";
+
+function UserFilter(props: { onValueChange: (value: (((prevState: string) => string) | string)) => void}) {
+    const {data} = useGetUserByRoleQuery('user');
+    return <div className=" w-full flex  rounded   ">
+        <Select onValueChange={props.onValueChange} >
+            <SelectTrigger className="w-full font-mono outline-none text-xs">
+                <SelectValue placeholder={"Select Users"}/>
+                <div className={"mx-3"}></div>
+            </SelectTrigger>
+            <SelectContent>
+                {data?.map((user) =>
+                    <SelectItem value={user?._id} key={user?._id} >{user?.username}</SelectItem>
+                )}
+                <SelectItem value={"reset"} ><Trash/></SelectItem>
+
+            </SelectContent>
+        </Select>
+    </div>;
+}
+const StatusFilter = (props:{onChange: (value: string) => void}) =>{
+    return (<div className=" w-full flex  rounded   ">
+        <Select onValueChange={props.onChange} >
+            <SelectTrigger className="w-full font-mono outline-none text-xs">
+                <SelectValue placeholder={"Select Status"}/>
+                <div className={"mx-3"}></div>
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value={"OnProcess"} >OnProcess</SelectItem>
+                <SelectItem value={"Done"} >Done</SelectItem>
+                <SelectItem value={"Pending"} >Pending</SelectItem>
+                <SelectItem value={"reset"} ><Trash className={"size-4"}/></SelectItem>
+            </SelectContent>
+        </Select>
+    </div>)
+}
 export default function OrderDetail({data:any}) {
-    const {data,isLoading} = useGetAllOrdersQuery(undefined,{refetchOnFocus:true});
+    const [filter,setFilter] = useState('');
+    const  [status,setStatus] = useState('');
+    const {data,isLoading} = (filter=="")||(filter=="reset")?useGetAllOrdersQuery(undefined,{refetchOnFocus:true}):useGetOrdersByUsrIdQuery(filter,{refetchOnFocus:true});
+
+    console.log("The data:",data)
     if(isLoading){
         return (<div>Loading</div>)
     }
-    console.log("Order :Data ",data.length)
+    console.log("The Value :",status);
+
+    const filter_order = (status=="" )|| (status == "reset")?data:data.filter(order => order.status === status)
     return (<div className={"w-full"}>
-        <Order orders={data}/>
+        <div className={"p-4 "}>
+            <div className={"flex p-1 w-full  justify-end"}>
+                <div className="flex  ">
+                    <UserFilter onValueChange={setFilter} />
+                    <StatusFilter onChange={value => setStatus(value)}/>
+                </div>
+            </div>
+
+        </div>
+        <Order orders={filter_order}/>
     </div>)
 }
 
 export const Order = ({orders}:{orders:Any})=>{
-    console.log(orders)
+    console.log("The orders: ",orders)
     return ( <div className="p-4  w-full rounded-md ">
         <div className=" w-full py-2 px-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5  text-xs font-semibold text-gray-400 uppercase rounded-t ">
             <div className="mx-1 text-left hover:text-black transition-all duration-300">User</div>

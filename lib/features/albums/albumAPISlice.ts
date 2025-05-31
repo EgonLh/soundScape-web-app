@@ -23,38 +23,57 @@ export interface Album {
 
 
 export const albumAPISlice = createApi({
-        baseQuery: fetchBaseQuery({baseUrl: BackEND_URL}),
-        reducerPath: "albumAPI",
-        // prepareHeaders: (headers, {getState}) => {
-        // // By default, if we have a token in the store, let's use that for authenticated requests
-        // const state = (getState() as RootState);
-        // console.log('prepareHeaders State  >>>>', state);
-        // if(state.auth.token)
-        // {
-        //     headers.set('Authorization', 'Bearer '+state.auth.TOKEN);
-        // }
-        // return headers;
-        // },
-        tagTypes: ["ALBUMS"],
-        endpoints: (build) => ({
-            getAlbums: build.query<Album[]>({
-                query: () => `/albums`,
-                providesTags: () => ["ALBUMS"],
+    baseQuery: fetchBaseQuery({ baseUrl: BackEND_URL }),
+    reducerPath: "albumAPI",
+    tagTypes: ["ALBUMS"],
+    endpoints: (build) => ({
+        // GET all albums
+        getAlbums: build.query<Album[]>({
+            query: () => `/albums`,
+            providesTags: ["ALBUMS"],
+        }),
+        // GET an album by ID
+        getAlbumByID: build.query<Album, string>({
+            query: (id) => `/albums/${id}`,
+            providesTags: ["ALBUMS"],
+        }),
+        // GET albums based on a filter
+        getAlbumByFilter: build.query<Album[], string>({
+            query: (filter) => `/albums/${filter}`,
+            providesTags: ["ALBUMS"],
+        }),
+        // GET albums by genre
+        getAlbumByGenre: build.query<Album[], string>({
+            query: (genre) => `/albums/genre/${genre}`,
+            providesTags: ["ALBUMS"],
+        }),
+        // CREATE a new album
+        createAlbum: build.mutation<Album, Partial<Album>>({
+            query: (newAlbum) => ({
+                url: `/albums`,
+                method: "POST",
+                body: newAlbum,
             }),
-            getAlbumByID:build.query<Album[]>({
-                query: (id) => `/albums/${id}`,
-                providesTags: () => ["ALBUMS"],
+            invalidatesTags: ["ALBUMS"],
+        }),
+        // UPDATE an album by ID
+        updateAlbum: build.mutation<Album, { id: string; updatedAlbum: Partial<Album> }>({
+            query: ({ id, updatedAlbum }) => ({
+                url: `/albums/${id}`,
+                method: "PUT",
+                body: updatedAlbum,
             }),
-            getAlbumByFilter:build.query<Album[]>({
-                query: (filter) => `/albums/${filter}`,
-                providesTags: () => ["ALBUMS"],
+            invalidatesTags: ["ALBUMS"],
+        }),
+        // DELETE an album by ID
+        deleteAlbum: build.mutation<{ id: string }, string>({
+            query: (id) => ({
+                url: `/albums/${id}`,
+                method: "DELETE",
             }),
-            getAlbumByGenre:build.query<Album[]>({
-                query: (filter) => `/albums/genre/${filter}`,
-                providesTags: () => ["ALBUMS"],
-            })
-        })
-    }
-);
+            invalidatesTags: ["ALBUMS"],
+        }),
+    }),
+});
 
-export const {useGetAlbumsQuery,useGetAlbumByIDQuery,useGetAlbumByGenreQuery,useGetAlbumByFilterQuery} = albumAPISlice;
+export const {useGetAlbumsQuery,useGetAlbumByIDQuery,useGetAlbumByGenreQuery,useGetAlbumByFilterQuery,useCreateAlbumMutation,useUpdateAlbumMutation,useDeleteAlbumMutation} = albumAPISlice;

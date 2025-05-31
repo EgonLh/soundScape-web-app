@@ -1,18 +1,45 @@
 "use client"
-import {useGetAllUsersQuery} from "@/lib/features/users/userApiSlice";
+import {useGetAllUsersQuery,useGetUserByIdQuery} from "@/lib/features/users/userApiSlice";
 import {Dialog,DialogTrigger,DialogContent,DialogHeader,DialogTitle,DialogDescription} from "@/app/components/ui/dialog"
-import {NotepadText, Send} from "lucide-react";
+import {CircleDotDashed, Loader, NotepadText, ScanSearch, Search, Send, Trash} from "lucide-react";
 import {Any} from "@react-spring/types";
 import {UserFormComponent} from "@/app/components/form/Forms";
 import {useRouter} from "next/navigation";
+import {useState} from "react";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/app/components/ui/select";
+
+const StatusFilter = (props:{onChange: (value: string) => void}) =>{
+    return (<div className="  flex  hover:border rounded">
+        <Select onValueChange={props.onChange} >
+            <SelectTrigger className="border-none shadow-none hover:border font-mono outline-none text-xs">
+                <SelectValue placeholder={"Role"}/>
+                <div className={"mx-3"}></div>
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value={"admin"} >Admin</SelectItem>
+                <SelectItem value={"user"} >User</SelectItem>
+                <SelectItem value={"reset"}><Trash className={"size-4"}/></SelectItem>
+            </SelectContent>
+        </Select>
+    </div>)
+}
 export default function UserDetail({data:any}) {
-    const {data,isLoading} = useGetAllUsersQuery(undefined,{refetchOnFocus: true});
+    const [filter,setFilter] = useState("");
+    const [user_role,setRole] = useState("");
+    const {data,isLoading} = filter==""?useGetAllUsersQuery(undefined,{refetchOnFocus: true}):useGetUserByIdQuery(filter,{refetchOnFocus:true});
     if(isLoading){
         return (<div>Loading</div>)
     }
-    console.log("User :Data ",data)
+    console.log("User :Data ",data);
+    const filter_user = user_role == ""|user_role == "reset" ? data:data.filter(user =>user.role == user_role);
     return (<div className={"w-full"}>
-        <User users={data}/>
+        <div className={"flex justify-center"}>
+            <div className={" md:w-2/6 w-5/6 flex items-center hover:my-4 transitions-all duration-300 rounded overflow-hidden border shadow hover:shadow-none"}>
+                <input onChange={(e)=>setFilter(e.target.value)} value={filter} className={"  w-5/6 text-xs font-mono  py-3  px-3   "} placeholder={"Enter username"}/>
+                <StatusFilter onChange={value => setRole(value)} />
+            </div>
+        </div>
+        <User users={filter_user}/>
     </div>)
 }
 
@@ -30,9 +57,11 @@ export const User = ({users}:{users:Any})=>{
             <div className="mx-1 text-end hidden lg:block hover:text-black transition-all duration-300">Billing Info</div>
             <div className="mx-1 text-end hover:text-black transition-all duration-300">Actions</div>
         </div>
-        {users?.map((user) => (
+        {users.length == 0?<div className={"flex justify-center font-mono items-center my-12 "}>
+            <div className={"text-slate-300 hover:text-black transition-all duration-300"}>No Result</div>
+            <Loader className={"size-4 animate-spin m-5"}/></div>:(users?.map((user) => (
             <UserRecord key={user._id} user={user} gotoDetail={gotoDetail} />
-        ))}
+        )))}
     </div>)
 }
 const UserRecord = ({ user, gotoDetail }) => {

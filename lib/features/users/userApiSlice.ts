@@ -40,6 +40,10 @@ export const UserApiSlice = createApi({
             query: (id) => `/users/${id}`,
             providesTags: () => ["USERS"],
         }),
+        getUserByRole:build.query<User,string>({
+           query:(filter)=>`/users/role/${filter}`,
+            providesTags: () => ["USERS"],
+        }),
         updateUser: build.mutation<User, { id: string; userInfo: Partial<User> }>({
             query: ({ userId, userInfo }) => ({
                 url: `/users/${userId}`,
@@ -61,4 +65,5 @@ export const {
     useGetUserByIdQuery,
     useUpdateUserMutation,
     useDeleteUserMutation,
+    useGetUserByRoleQuery,
 } = UserApiSlice;

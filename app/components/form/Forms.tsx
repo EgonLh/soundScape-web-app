@@ -6,8 +6,10 @@ import {toast} from "sonner";
 import {Edit2, FolderArchive, SendHorizontalIcon, Trash} from "lucide-react"
 import {useGetUserInfoQuery} from "@/lib/features/auth/authApi";
 import {useGetAllUsersQuery,useUpdateUserMutation,useDeleteUserMutation} from "@/lib/features/users/userApiSlice";
+import {useDeleteAlbumMutation,useUpdateAlbumMutation,useCreateAlbumMutation} from "@/lib/features/albums/albumAPISlice";
 import {SendThisShit} from "@/app/components/mailder/srAction";
 import {useUpdateOrderMutation, useDeleteOrderMutation,useDeleteOrderByUserIDMutation } from "@/lib/features/orders/orderApiSlice";
+import {useGetAllGenresQuery} from "@/lib/features/genres/genreAPISlice";
 //Order Form
 export const FormComponent = ({data}: { data: Any }) => {
 
@@ -21,9 +23,7 @@ export const FormComponent = ({data}: { data: Any }) => {
         console.log("handle Delete Invoked",data._id);
         deleteOrder(data._id);
     };
-    // console.log("data for form ", data.metadata);
     const [mode, setEdit] = useState(true);
-    // console.log(mode);
 
     const handleEdit = () => {
         setEdit(!mode);
@@ -199,6 +199,7 @@ export const UserFormComponent = ({data}: { data: Any }) => {
                 profileUrl: values.profile,
                 billInfo: values.billing,
                 metadata: {
+                    createdAt:values.createdAt,
                     updatedAt: new Date().toLocaleDateString("en-US") // Store timestamp in ISO format
                 }
             };
@@ -332,124 +333,149 @@ export const UserFormComponent = ({data}: { data: Any }) => {
 };
 
 //Product Form
-export const ProductFormComponent = ({data}: { data: Any }) => {
+export const AlbumFormComponent = ({ data }: { data?: any }) => {
     const [mode, setEdit] = useState(true);
+    const  [updateAlbum] = useUpdateAlbumMutation();
+    const [deleteAlbum] = useDeleteAlbumMutation();
     const handleEdit = () => {
         setEdit(!mode);
-        let msg = mode ? "Enabled" : "Disabled";
+        const msg = mode ? "Enabled" : "Disabled";
         toast(`Edit mode has been successfully ${msg}`);
     };
-    console.log("Song form data:", data);
-    data?.songs.map(a => {
-        console.log("Songs :", a);
-    });
+
+    const handleSubmit = async (values: any, { setSubmitting }: { setSubmitting: (val: boolean) => void }) => {
+        try {
+            let submitted_values = {
+                "title" :values?.title,
+                "albumUrl":values?.albumUrl,
+                "artist":values?.artist,
+                "description":values?.description,
+                "price":values?.price,
+                "status":values?.status,
+                "metadata": {
+                    "createdAt":values.createdAt,
+                    "updatedAt": new Date().toLocaleDateString("en-US") // Store timestamp in ISO format
+                }
+            }
+
+            console.log("the final values :",submitted_values)
+            const updated_Data = updateAlbum({id:data?._id,updatedAlbum:submitted_values});
+            console.log("updatedDate",updated_Data)
+            toast.success("Album updated successfully");
+        } catch (error) {
+            console.error("Update failed:", error);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     return (
         <Formik
             initialValues={{
-                albumUrl: data?.albumUrl,
-                title: data?.title,
-                artist: data?.artist,
-                genre: data?.genreId,
-                releasedDate: data?.releasedDate,
-                description: data?.description,
-                song: data?.songs,
-                price: data?.price.$numberDecimal,
-                createdAt: data?.metadata?.createdAt,
-                updatedAt: data?.metadata?.updatedAt
+                albumUrl: data?.albumUrl || "",
+                title: data?.title || "",
+                artist: data?.artist || "",
+                genre: data?.genreId || "",
+                releasedDate: data?.releaseDate || "",
+                description: data?.description || "",
+                price: data?.price?.$numberDecimal || 0,
+                createdAt: data?.metadata?.createdAt || "",
+                updatedAt: data?.metadata?.updatedAt || "",
+                song: ""
             }}
             validationSchema={Yup.object({
-                fname: Yup.string().required("Name is required"),
-                lname: Yup.string().required("Name is required"),
-                email: Yup.string().email("Invalid email").required("Email is required"),
-
+                albumUrl: Yup.string().required("Album URL is required"),
+                title: Yup.string().required("Title is required"),
+                artist: Yup.string().required("Artist is required"),
+                price: Yup.number().required("Price is required"),
+                description: Yup.string().required("Description is required")
             })}
-            onSubmit={(values, {setSubmitting}) => {
-                console.log("Form Submitted", values);
-                setSubmitting(false);
-            }}
+            onSubmit={handleSubmit}
         >
-            {({isSubmitting}) => (
+            {({ isSubmitting }) => (
                 <Form className="p-4">
-                    <div className={"my-3"}>
-                        <label className="block font-medium">albumUrl Url:</label>
-                        <Field type="text" name="albumUrl" className="border p-2 w-full rounded" disabled={true}/>
-                        <ErrorMessage name="albumUrl" component="div" className="text-red-500"/>
+                    <div className="my-3">
+                        <label className="block font-medium">Album URL:</label>
+                        <Field type="text" name="albumUrl" className="border p-2 w-full rounded" disabled={mode} />
+                        <ErrorMessage name="albumUrl" component="div" className="text-red-500" />
                     </div>
-                    <div className={"my-3"}>
-                        <label className="block font-medium">title:</label>
-                        <Field type="text" name="title" className={`border p-2 w-full rounded `} disabled={true}/>
-                        <ErrorMessage name="title" component="div" className="text-red-500"/>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Title:</label>
+                        <Field type="text" name="title" className="border p-2 w-full rounded" disabled={mode} />
+                        <ErrorMessage name="title" component="div" className="text-red-500" />
                     </div>
-                    <div className={"my-3"}>
-                        <label className="block font-medium">artist:</label>
-                        <Field type="text" name="artist" className="border p-2 w-full rounded" disabled={true}/>
-                        <ErrorMessage name="artist" component="div" className="text-red-500"/>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Artist:</label>
+                        <Field type="text" name="artist" className="border p-2 w-full rounded" disabled={mode} />
+                        <ErrorMessage name="artist" component="div" className="text-red-500" />
                     </div>
-                    <div>
-                        <label className="block font-medium">song:</label>
-                        <Field as="select" name="song" className="border p-2 w-full rounded" disabled={mode}>
-                            <option value={''} selected>Songs in The Ablbums</option>
-                            {data?.songs.map(a => (
-                                <option value={a}>{a}</option>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Song:</label>
+                        <Field as="select" name="song" key={Math.random()} className="border p-2 w-full rounded" disabled={mode}>
+                            {data?.songs?.map((song: any) => (
+                                <option value={song} key={song}>{song}</option>
                             ))}
                         </Field>
-                        <ErrorMessage name="current_status" component="div" className="text-red-500"/>
-                    </div>
-                    <div>
-                        <label className="block font-medium">Genre:late to updated</label>
-                        <Field type="text" name="genre" className="border p-2 w-full rounded" disabled={true}/>
-                        <ErrorMessage name="genre" component="div" className="text-red-500"/>
-                    </div>
-                    <div>
-                        <label className="block font-medium">releasedDate</label>
-                        <Field type="text" name="releasedDate" className="border p-2 w-full rounded" disabled={true}/>
-                        <ErrorMessage name="releasedDate" component="div" className="text-red-500"/>
-                    </div>
-                    <div>
-                        <label className="block font-medium">description</label>
-                        <Field type="textArea" name="description" className="border p-2 w-full rounded"
-                               disabled={true}/>
-                        <ErrorMessage name="description" component="div" className="text-red-500"/>
-                    </div>
-                    <div>
-                        <label className="block font-medium">price</label>
-                        <Field type="number" name="price" className="border p-2 w-full rounded" disabled={true}/>
-                        <ErrorMessage name="price" component="div" className="text-red-500"/>
                     </div>
 
-                    <div className={"my-3"}>
-                        <label className="block font-medium">Metadata:</label>
-                        <div className={"flex justify-between"}>
-                            <Field type="text" name="createdAt" className={`border p-2 w-full rounded `}
-                                   disabled={true}/>
-                            <Field type="text" name="updatedAt" className={`border p-2 w-full rounded `}
-                                   disabled={true}/>
-                        </div>
-                        <ErrorMessage name="createdAt" component="div" className="text-red-500"/>
-                        <ErrorMessage name="createdAt" component="div" className="text-red-500"/>
+                    <div className="my-3">
+                        <label className="block font-medium">Released Date:</label>
+                        <Field type="text" name="releasedDate" className="border p-2 w-full rounded" disabled={mode} />
                     </div>
-                    <div className={"my-5 flex justify-between items-center "}>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Description:</label>
+                        <Field as="textarea" name="description" className="border p-2 w-full rounded" disabled />
+                        <ErrorMessage name="description" component="div" className="text-red-500" />
+                    </div>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Status:</label>
+                        <Field as="select" name="status" className="border p-2 w-full rounded" disabled={mode} >
+                            <option value={'InStock'} key={"InStock"}>In Stock</option>
+                            <option value={'OutStock'} key={"OutStock"}>Out of Stock</option>
+                        </Field>
+                    </div>
+                    <div className="my-3">
+                        <label className="block font-medium">Price:</label>
+                        <Field type="number" name="price" className="border p-2 w-full rounded" disabled={mode} />
+                        <ErrorMessage name="price" component="div" className="text-red-500" />
+                    </div>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Metadata:</label>
+                        <div className="flex justify-between gap-2">
+                            <Field type="text" name="createdAt" className="border p-2 w-full rounded" disabled />
+                            <Field type="text" name="updatedAt" className="border p-2 w-full rounded" disabled />
+                        </div>
+                    </div>
+
+
+                    <div className="my-5 flex justify-between items-center">
                         <button
                             type="submit"
-                            className=" bg-black text-white p-1 rounded flex justify-center items-center"
+                            className="bg-black text-white p-1 rounded flex justify-center items-center"
                             disabled={isSubmitting}
                         >
-                            <SendHorizontalIcon/>
+                            <SendHorizontalIcon />
                         </button>
-                        <div className={"flex justify-center items-center"}>
+                        <div className="flex justify-center items-center">
                             <button
-                                type={"button"}
-                                className=" bg-black text-white  hover:text-white/[0.8] text-white p-1 rounded "
+                                type="button"
+                                className="bg-black text-white hover:text-white/[0.8] p-1 rounded"
                                 onClick={handleEdit}
                             >
-                                {mode ? <Edit2/> : <FolderArchive/>}
+                                {mode ? <Edit2 /> : <FolderArchive />}
                             </button>
                             <button
-
-                                className=" ms-3 bg-black text-white hover:text-white/[0.8] text-white p-1 rounded "
-                                onClick={handleEdit}
+                                type="button"
+                                className="ms-3 bg-black text-white hover:text-white/[0.8] p-1 rounded"
+                                onClick={() => toast.warn("Delete function not implemented")}
                             >
-                                <Trash/>
+                                <Trash />
                             </button>
                         </div>
                     </div>
@@ -458,7 +484,133 @@ export const ProductFormComponent = ({data}: { data: Any }) => {
         </Formik>
     );
 };
+export const AlbumCreateFormComponent = () => {
+    const {data} = useGetAllGenresQuery();
+    const [createAlbum] = useCreateAlbumMutation();
+    console.log("The genreS :",data)
+    const handleSubmit = async (values: any, { setSubmitting }: { setSubmitting: (val: boolean) => void }) => {
+        try {
+            console.log("the final values :",values)
+            const newAlbum = {
+                "title":values?.title,
+                "albumUrl":values.albumUrl,
+                "status":values.status,
+                "artist":values.artist,
+                "genreId":[...values.genre],
+                "releaseDate":values.releasedDate,
+                "description":values.description,
+                "songs":(values.song).split(","),
+                "price": values.price
+            }
 
+            console.log("the final albums" , newAlbum);
+            createAlbum(newAlbum);
+            toast.success("Album Added successfully");
+        } catch (error) {
+            console.error("Update failed:", error);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    return (
+        <Formik
+            initialValues={{
+                albumUrl:  "",
+                title: "",
+                artist: "",
+                genre:"",
+                releasedDate: "",
+                description: "",
+                price: 0,
+                song: ""
+            }}
+            validationSchema={Yup.object({
+                albumUrl: Yup.string().required("Album URL is required"),
+                title: Yup.string().required("Title is required"),
+                artist: Yup.string().required("Artist is required"),
+                releasedDate: Yup.string().required("Released Date is required"), // Added releasedDate validation
+                description: Yup.string().required("Description is required"),
+                genre: Yup.array().min(1, "Select at least one genre"),
+                price: Yup.number().required("Price is required").positive("Price must be a positive number"), // Added positive price validation
+                song: Yup.string().required("Song is required") // Added song validation
+            })}
+            onSubmit={handleSubmit}
+        >
+            {({ isSubmitting, setFieldValue, values }) => (
+                <Form className="p-4">
+                    <div className="my-3">
+                        <label className="block font-medium">Album URL:</label>
+                        <Field type="text" name="albumUrl" className="border p-2 w-full rounded"  />
+                        <ErrorMessage name="albumUrl" component="div" className="text-red-500" />
+                    </div>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Title:</label>
+                        <Field type="text" name="title" className="border p-2 w-full rounded" />
+                        <ErrorMessage name="title" component="div" className="text-red-500" />
+                    </div>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Artist:</label>
+                        <Field type="text" name="artist" className="border p-2 w-full rounded" />
+                        <ErrorMessage name="artist" component="div" className="text-red-500" />
+                    </div>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Song:</label>
+                        <Field type="text" name="song" className="border p-2 w-full rounded" >
+                        </Field>
+                    </div>
+                    <div className="my-3">
+                        <label className="block font-medium">Genres:</label>
+                        {data?.map((genre: any) => (
+                            <div key={genre._id} className="flex items-center my-1">
+                                <input type={"checkbox"} name="genre" value={genre?._id}/>
+                                <label htmlFor={`genre-${genre.id}`}>{genre?.genre}</label>
+                            </div>
+                        ))}
+                        <ErrorMessage name="genre" component="div" className="text-red-500" />
+                    </div>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Released Date:</label>
+                        <Field type="date" name="releasedDate" className="border p-2 w-full rounded"/>
+                    </div>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Description:</label>
+                        <Field as="textarea" name="description" className="border p-2 w-full rounded"  />
+                        <ErrorMessage name="description" component="div" className="text-red-500" />
+                    </div>
+
+                    <div className="my-3">
+                        <label className="block font-medium">Status:</label>
+                        <Field as="select" name="status" className="border p-2 w-full rounded" >
+                            <option value={'InStock'} key={"InStock"}>In Stock</option>
+                            <option value={'OutStock'} key={"OutStock"}>Out of Stock</option>
+                        </Field>
+                    </div>
+                    <div className="my-3">
+                        <label className="block font-medium">Price:</label>
+                        <Field type="number" name="price" className="border p-2 w-full rounded" />
+                        <ErrorMessage name="price" component="div" className="text-red-500" />
+                    </div>
+                    <div className="my-5 flex justify-between items-center">
+                        <button
+                            type="submit"
+                            className="bg-black text-white p-1 rounded flex justify-center items-center"
+                            disabled={isSubmitting}
+                        >
+                            <SendHorizontalIcon />
+                        </button>
+
+                    </div>
+                </Form>
+            )}
+        </Formik>
+    );
+};
 //Email Form
 export const RequestFormComponent = ({user_id}:{any}) => {
     console.log("Id",user_id)

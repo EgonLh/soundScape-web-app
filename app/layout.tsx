@@ -7,7 +7,7 @@ import "./styles/globals.css";
 import styles from "./styles/layout.module.css";
 import Footer from "@/app/components/Footer";
 import React from "react";
-import {Toaster} from "@/components/ui/sonner";
+import {Toaster} from "@/app/components/ui/sonner";
 interface Props {
   readonly children: ReactNode;
 }
